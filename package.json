@@ -1,0 +1,51 @@
+{
+  "name": "@krafters/qa-engine",
+  "version": "0.1.0",
+  "description": "Record composed 16:9 QA walkthroughs of a web app with Playwright — live console panel + the real app embedded same-origin, driven through the DOM/accessibility tree (no screenshots).",
+  "type": "module",
+  "license": "MIT",
+  "author": "Krafters",
+  "homepage": "https://github.com/krafters-io/qa-engine#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krafters-io/qa-engine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/krafters-io/qa-engine/issues"
+  },
+  "keywords": [
+    "playwright",
+    "qa",
+    "e2e",
+    "screen-recording",
+    "accessibility",
+    "a11y",
+    "video",
+    "testing"
+  ],
+  "main": "./index.mjs",
+  "exports": {
+    ".": "./index.mjs",
+    "./harness": "./lib/harness.mjs",
+    "./discover": "./lib/discover.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "ffmpeg-static": "5.3.0",
+    "playwright": "1.61.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
