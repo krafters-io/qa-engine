@@ -129,6 +129,28 @@ Configure via env: `QA_APP_ORIGIN`, `QA_EMAIL`, `QA_PASSWORD`,
 See [`examples/krafters`](./examples/krafters) for a real scenario and the
 `serve.sh` / `run.sh` helpers (build a prod server once, re-record fast).
 
+## Authoring guidelines (every scenario)
+
+These are the defaults a QA walkthrough should always follow — the engine bakes
+in the motion, the scenario brings the coverage:
+
+- **Natural pointer, never a teleport.** The engine moves the cursor along a
+  curved, variable-speed path and leaves a fading **motion trail**, with a short
+  settle/hover before each click. Reach controls with `t.moveTo(locator,{click})`
+  — don't snap straight to a bare `locator.click()`.
+- **Move like a human.** Type into fields character-by-character
+  (`locator.pressSequentially(text, { delay: 90 })`), scroll to reveal content,
+  and `t.sleep` between beats so the viewer can follow. Compress any wait > 5s.
+- **Cover everything the change touches.** For each new or changed screen, state,
+  and interactive control the deliverable introduces, drive it on **both desktop
+  and mobile**. Record the meaningful states — empty / valid / loading / error /
+  expired — not just the happy path.
+- **Explain, don't just show.** One green `t.ok` per milestone, and surface where
+  an action leads (e.g. log the resolved link `href`) so the recording narrates
+  the behaviour under test.
+- **Make it reproducible.** Reset seed rows at the start with `t.psql` so every
+  run — and the second viewport — replays the same flow deterministically.
+
 ## Gotchas (already handled by the engine)
 
 - **Prod build required** — dev/HMR doesn't hydrate headless; the engine waits on
