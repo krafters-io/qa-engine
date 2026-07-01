@@ -71,7 +71,7 @@ record({
     // drive navigation, so we exercise the exact same URL contract directly and
     // gesture the cursor onto the icon. End state is identical to a real click.
     await t.step("open the chat icon → ?drawer=true");
-    await t.moveTo(t.app.locator('[aria-label="Toggle chat"]'));
+    await t.moveTo(t.app.locator('[aria-label^="Toggle chat"]'));
     await k.openDeliverable(t, `${DETAIL}?drawer=true`);
     let wOpen = 0;
     for (let i = 0; i < 20 && wOpen < 500; i++) {

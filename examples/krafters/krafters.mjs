@@ -13,7 +13,7 @@ export async function openDeliverable(t, path) {
   await t.step(`open the deliverable ${path}`);
   // The specification is the main surface now; the chat toggle is the stable
   // chrome control that exists on every deliverable detail view.
-  await t.navTo(path, { ready: '[aria-label="Toggle chat"]' });
+  await t.navTo(path, { ready: '[aria-label^="Toggle chat"]' });
   await t.sleep(1400);
   await t.ok("deliverable opened");
 }
@@ -29,7 +29,7 @@ export async function openDrawer(t) {
   const w = () => drawer.evaluate((el) => Math.round(el.getBoundingClientRect().width)).catch(() => 0);
   for (let attempt = 0; attempt < 3; attempt++) {
     if ((await w()) >= 500) break;
-    await t.moveTo(t.app.locator('[aria-label="Toggle chat"]'), { click: true });
+    await t.moveTo(t.app.locator('[aria-label^="Toggle chat"]'), { click: true });
     for (let i = 0; i < 16 && (await w()) < 500; i++) await t.sleep(300); // poll ~4.8s
   }
   return w();
