@@ -1,4 +1,4 @@
-# @krafters/qa-engine
+# @krafters-io/qa-engine
 
 Record **composed 16:9 QA walkthrough videos** of a web app with Playwright, and
 drive the app through the **DOM / accessibility tree — never screenshots**.
@@ -40,7 +40,7 @@ QA walkthroughs usually break in two ways, and this engine is built to avoid bot
 ## Install
 
 ```sh
-npm install @krafters/qa-engine
+npm install @krafters-io/qa-engine
 ```
 
 Playwright downloads its pinned Chromium automatically on install (and the engine
@@ -59,7 +59,7 @@ The fast way to author or drive a flow. Point it at a Playwright `Page` or
 
 ```js
 import { chromium } from "playwright";
-import { mapInteractables, findInteractable } from "@krafters/qa-engine";
+import { mapInteractables, findInteractable } from "@krafters-io/qa-engine";
 
 const page = await (await chromium.launch()).newPage();
 await page.goto("https://example.com");
@@ -92,7 +92,7 @@ and the resulting locators are the most stable.
 Write a small scenario and hand it to `record()`:
 
 ```js
-import { record } from "@krafters/qa-engine";
+import { record } from "@krafters-io/qa-engine";
 
 record({
   title: "Sign in and open the dashboard",

@@ -1,4 +1,4 @@
-# Plano: transformar o qa_executor em `@krafters/qa-engine` (npm package genérico)
+# Plano: transformar o qa_executor em `@krafters-io/qa-engine` (npm package genérico)
 
 > Status: **rascunho / a pensar depois** (deliverable no backlog da krafters).
 > Não começar sem decidir as "Decisões em aberto" abaixo.
@@ -17,17 +17,17 @@ O MCP é um **servidor** — ele não instala software na máquina do usuário n
 Playwright lá. Quem roda o QA local é o **agente (Claude Code)** via Bash. Então o
 package não é "anexado" ao MCP; o MCP **prescreve a receita** (nome do package +
 versão pinada + invocação + env) nas `qa_directives`/esteira, e o agente roda
-`npx @krafters/qa-engine@<pin> …` localmente (o npx resolve a instalação on-demand,
+`npx @krafters-io/qa-engine@<pin> …` localmente (o npx resolve a instalação on-demand,
 com cache).
 
 ## Split de pacotes (manter o engine "bem genérico")
 
-- **`@krafters/qa-engine`** (genérico, publicável; nada de Krafters):
+- **`@krafters-io/qa-engine`** (genérico, publicável; nada de Krafters):
   - engine: auth same-origin, frame composto 16:9 (console à esquerda + app em
     iframe à direita), cursor/ripple, espera de hidratação, captura de network,
     transcode H.264 < 50MB (vem de `lib/harness.mjs`).
   - CLI (`krafters-qa` / `qa-engine`): `record`, `serve`, `run` (turnkey).
-  - API de biblioteca: `import { record } from "@krafters/qa-engine"` para
+  - API de biblioteca: `import { record } from "@krafters-io/qa-engine"` para
     cenários autorais (é o que o `record.mjs` já faz hoje contra `lib/harness.mjs`).
   - opcional: "recipes" genéricas (open page, click, fill, assert) pra QAs simples
     não precisarem de código.
@@ -61,7 +61,7 @@ plataforma) acontece **uma vez por máquina**, automático e cacheado. Depois, z
 ## Integração com o MCP
 
 - `qa_directives` (e a esteira / bloco `pipeline`) passam a retornar:
-  - o **comando exato**: `npx @krafters/qa-engine@<versão-pinada> record
+  - o **comando exato**: `npx @krafters-io/qa-engine@<versão-pinada> record
     --target <path> --viewport desktop|mobile --deliverable <id> --out <mp4>`;
   - o **env** necessário (origin/credenciais/DB) e os limites (16:9, <50MB);
   - a referência de que cenários app-specific ficam no repo.
@@ -79,7 +79,7 @@ plataforma) acontece **uma vez por máquina**, automático e cacheado. Depois, z
 ## Passos de migração (deste folder → package)
 
 1. Extrair `lib/harness.mjs` (+ cursor/console/transcode) como núcleo do
-   `@krafters/qa-engine`; tornar genérico (sem nada hardcoded de Krafters).
+   `@krafters-io/qa-engine`; tornar genérico (sem nada hardcoded de Krafters).
 2. Expor CLI (`record`/`serve`/`run`) e API de biblioteca.
 3. Mover `playwright` (full) + `ffmpeg-static` pra deps; implementar
    `ensureBrowser()` (self-heal) e pin do Chromium.
@@ -87,7 +87,7 @@ plataforma) acontece **uma vez por máquina**, automático e cacheado. Depois, z
    `@krafters/qa-recipes`).
 5. Publicar (decidir registry: npm público vs privado/GitHub Packages).
 6. Atualizar `qa_directives`/esteira no MCP pra apontar `npx <package>@<pin>`.
-7. Documentar o turnkey: `npx @krafters/qa-engine run --app-dir <worktree>
+7. Documentar o turnkey: `npx @krafters-io/qa-engine run --app-dir <worktree>
    --target <path> --out out/qa-desktop.mp4`.
 
 ## Decisões em aberto (pensar depois)
