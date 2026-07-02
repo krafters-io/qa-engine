@@ -6,8 +6,8 @@
  * right, visible cursor) and drives the app through the DOM/accessibility tree —
  * never screenshots.
  *
- *   import { record, mapInteractables } from "@krafters-io/qa-engine";
+ *   import { record, poster, mapInteractables } from "@krafters-io/qa-engine";
  */
 
-export { record } from "./lib/harness.mjs";
+export { record, poster } from "./lib/harness.mjs";
 export { mapInteractables, findInteractable } from "./lib/discover.mjs";

@@ -1,6 +1,6 @@
 {
   "name": "@krafters-io/qa-engine",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Record composed 16:9 QA walkthroughs of a web app with Playwright — live console panel + the real app embedded same-origin, driven through the DOM/accessibility tree (no screenshots).",
   "type": "module",
   "license": "MIT",

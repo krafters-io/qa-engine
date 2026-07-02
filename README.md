@@ -6,9 +6,13 @@ drive the app through the **DOM / accessibility tree — never screenshots**.
 Each frame is a single 16:9 canvas: a live **console panel** on the left
 (▸ steps, ✓ assertions, real network rows) and the **real app embedded
 same-origin** on the right, with a visible cursor and human-like navigation. The
-output is an H.264 `.mp4` under 50 MB.
+output is an H.264 `.mp4` under 50 MB, plus a **16:9 poster jpg**
+(`<out>-poster.jpg`) — a mid-video frame under a black 0.7 overlay with the
+title large and centered — for use as the player thumbnail (`QA_POSTER=0`
+disables it). `record()` prints a final JSON line with `out`, `sizeMB`, `sheet`
+and `poster` paths.
 
-> Status: early (`0.1.0`). The recording engine is in use; the public API and CLI
+> Status: early (`0.2.0`). The recording engine is in use; the public API and CLI
 > are still settling. Extracted from Krafters' internal QA tooling and being made
 > generic + open source.
 
