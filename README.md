@@ -12,7 +12,7 @@ title large and centered — for use as the player thumbnail (`QA_POSTER=0`
 disables it). `record()` prints a final JSON line with `out`, `sizeMB`, `sheet`
 and `poster` paths.
 
-> Status: early (`0.2.0`). The recording engine is in use; the public API and CLI
+> Status: early (`0.3.0`). The recording engine is in use; the public API and CLI
 > are still settling. Extracted from Krafters' internal QA tooling and being made
 > generic + open source.
 
@@ -129,6 +129,23 @@ The scenario context `t` includes:
 Configure via env: `QA_APP_ORIGIN`, `QA_EMAIL`, `QA_PASSWORD`,
 `QA_VIEWPORT` (`desktop`\|`mobile`), `QA_TITLE`, `QA_OUT`, `QA_DB_URL`,
 `QA_CONTACTSHEET=1`, `FFMPEG_PATH`.
+
+## Viewports
+
+| `QA_VIEWPORT` | app viewport | composed frame |
+| --- | --- | --- |
+| `desktop` | **1920×1080** | 2560×1440 |
+| `mobile` | 390×844 | 1600×900 |
+
+**The app viewport is real, never scaled.** `desktop` gives the app under test a
+full 1920×1080 window — the same one a user gets on a maximised browser — so
+layouts break in the recording only where they'd break for real. That is what
+sets the frame size: the canvas has to hold a 1920-wide app *next to* the
+console panel and stay 16:9, so it lands at 2560×1440. A bigger canvas, not a
+smaller app.
+
+The console panel keeps its share of the frame (and scales its type with it), so
+the log stays readable once the video is scaled into a player.
 
 See [`examples/krafters`](./examples/krafters) for a real scenario and the
 `serve.sh` / `run.sh` helpers (build a prod server once, re-record fast).
