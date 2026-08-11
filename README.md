@@ -155,6 +155,13 @@ See [`examples/krafters`](./examples/krafters) for a real scenario and the
 These are the defaults a QA walkthrough should always follow — the engine bakes
 in the motion, the scenario brings the coverage:
 
+- **English only, no exceptions.** The title and every `t.step` / `t.ok` /
+  `t.note` / `t.warn` is written in English. These recordings are reviewed
+  across the company and attached to tickets; a console panel that mixes
+  languages reads as unfinished. The app under test may render whatever locale
+  it likes — this is about the words the engine burns into the frame.
+  `record()` enforces it: a non-English title or console line throws before the
+  recording is wasted.
 - **Natural pointer, never a teleport.** The engine moves the cursor along a
   curved, variable-speed path and leaves a fading **motion trail**, with a short
   settle/hover before each click. Reach controls with `t.moveTo(locator,{click})`
@@ -172,16 +179,71 @@ in the motion, the scenario brings the coverage:
 - **Make it reproducible.** Reset seed rows at the start with `t.psql` so every
   run — and the second viewport — replays the same flow deterministically.
 
+## Pacing
+
+A run against a real backend is mostly waiting: cold boots, route transitions,
+queries. Left in, those minutes read as a dead screen. The engine caps every
+stretch where the app sits still at `QA_MAX_IDLE` seconds (3 by default, `0`
+disables it) and reports what it removed as `idleTrimmedSeconds`.
+
+It cuts dead air, not actions — so give each beat room to breathe. A dwell of
+roughly 2–3s after a click reads as deliberate; under a second reads as a
+glitch. The cap is an upper bound, not a target.
+
+Two details decide whether the measurement is any good, and both were learned
+the hard way:
+
+- Idleness is judged on the **app pane alone**. The console panel keeps
+  appending network rows while the app boots, so a whole-frame measure never
+  sees the app standing still and finds almost nothing to trim.
+- The noise threshold is deliberately strict. Frame differencing compares
+  whole-frame averages, and typing into an input changes a few hundred pixels
+  out of two million. A tolerant threshold calls that "frozen" and eats the very
+  actions the video exists to show — menu clicks stay long, keystrokes vanish.
+
+## Uploads
+
+Most designs trigger a hidden `<input type="file">` from a styled button.
+`t.pickFile(trigger, paths)` clicks the button the viewer can actually see and
+answers the chooser it opens:
+
+```js
+await t.pickFile(t.app.getByText("Select File", { exact: true }), "/tmp/report.pdf");
+```
+
 ## Gotchas (already handled by the engine)
 
 - **Prod build required** — dev/HMR doesn't hydrate headless; the engine waits on
   each element's React fiber before driving it.
 - **Same-origin harness** — the harness HTML is served from the app's own origin
   so the login cookie sticks inside the iframe; framing headers are stripped.
+- **Compressed documents** — a re-served document is decoded first, so the
+  original `content-encoding` is dropped. Keeping it hands the browser a gzip
+  label on plain bytes and the frame renders blank.
+- **HTTPS-forcing servers** — set `QA_FORWARDED_PROTO=1` when the app redirects
+  http to https and trusts `x-forwarded-proto`. It reaches every request, not
+  just documents: with only documents covered the static assets still 301, the
+  bundle never loads, and the run dies waiting on a hydration that cannot happen.
+- **Third-party widgets** — analytics and chat scripts are blocked by default
+  (`QA_BLOCK_THIRD_PARTY=0` keeps them). Web fonts are **never** blocked: apps
+  routinely load their brand face from a CDN, and blocking it drops every label
+  to the system fallback, which reads as broken type rather than a faster run.
 - **Local Network Access** — Chromium is launched with the flags that let the
   embedded app reach `localhost` services.
 - **Browser pin** — the Chromium revision is pinned by the `playwright` version,
   so recordings are reproducible across machines.
+
+## Gotchas the engine cannot handle for you
+
+- **A second app on another domain.** Cookies for a host outside the harness's
+  own site are `SameSite=Lax` and never reach a cross-site iframe, so the app
+  renders its logged-out state. Add them as `sameSite: "None", secure: true` —
+  Chromium accepts `Secure` over http on the localhost family.
+- **Files served by the app under test do not render in the frame.** Headless
+  Chromium ships no PDF viewer at all, and a re-served document loses the
+  streaming the viewer needs. Assert the download over HTTP instead
+  (`t.page.request.get(...)`) and print status, content type and byte count to
+  the console panel — the guarantee is proven, just not as a rendered page.
 
 ## License
 
