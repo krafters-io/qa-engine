@@ -155,6 +155,13 @@ See [`examples/krafters`](./examples/krafters) for a real scenario and the
 These are the defaults a QA walkthrough should always follow — the engine bakes
 in the motion, the scenario brings the coverage:
 
+- **English only, no exceptions.** The title and every `t.step` / `t.ok` /
+  `t.note` / `t.warn` is written in English. These recordings are reviewed
+  across the company and attached to tickets; a console panel that mixes
+  languages reads as unfinished. The app under test may render whatever locale
+  it likes — this is about the words the engine burns into the frame.
+  `record()` enforces it: a non-English title or console line throws before the
+  recording is wasted.
 - **Natural pointer, never a teleport.** The engine moves the cursor along a
   curved, variable-speed path and leaves a fading **motion trail**, with a short
   settle/hover before each click. Reach controls with `t.moveTo(locator,{click})`
